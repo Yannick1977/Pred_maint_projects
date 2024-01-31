@@ -1,0 +1,9 @@
+config_path:
+  work_dir: workdir
+  model_dir: workdir/model
+  local_data_file: data/predictive_maintenance.csv
+  local_data_file_analyse: workdir/predictive_maintenance_A.csv
+  local_data_file_validation : workdir/predictive_maintenance_validation.csv
+  local_data_file_train : workdir/predictive_maintenance_train.csv
+  local_data_file_test : workdir/predictive_maintenance_test.csv
+
