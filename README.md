@@ -14,8 +14,9 @@ https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classific
 2. '#2_Preprocess_data' : Transform, prepare data for training notebook
 3. '#3a_Modeling_DNN' : Training notebook, save model in 'Model' directory for deep learning network
 4. '#3b_regressionLog' : Training notebook, save model in 'Model' directory for logistic regressionmethod
-4. '#4_Model_explication' : Notebook to explain the model 
+4. '#4_Model_explication' : Notebook to explain the model global and local
 
 **Src details:**
 1. 'Config': contains script py for mange configuration file
 2. 'utils': contains script for differents modules
+3. 'APP' : contains script utils to API

@@ -1,10 +1,12 @@
 import pandas as pd
 from sklearn.compose import ColumnTransformer
+import joblib
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 from imblearn.over_sampling import SMOTE
 from box import ConfigBox
+import os
 
 class utils_preprocess:
     def __init__(self, df_: pd.DataFrame, cfg_path: ConfigBox):
@@ -107,10 +109,14 @@ class utils_preprocess:
             test_size=0.2,
             stratify=y_,
             random_state=42)
-
+        
         # Fit and transform datasets
         X_train_trans, X_test_trans, X_val_trans = self.fit_transform(ct_X_, X_train, X_test, X_val)
         y_train_trans, y_test_trans, y_val_trans = self.fit_transform(ct_y_, pd.DataFrame(y_train), pd.DataFrame(y_test), pd.DataFrame(y_val))
+
+        # Save the transformer to file
+        file_transformer = './'+self.cfg_path.work_dir+'/transformer.pkl'
+        joblib.dump(ct_X_, file_transformer)
 
         # Create a dictionary to map the target values to their corresponding indices
         cat_=ct_y_.named_transformers_['fail'].categories_
