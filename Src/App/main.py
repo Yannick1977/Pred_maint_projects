@@ -28,6 +28,9 @@ from Src.config import configuration
 cfg = configuration.config_manager().get_path()
 
 # Chargement du modèle
+print('________________________________')
+print(os.getcwd())
+print('./'+cfg.config_path.model_dir+'/best_model.keras')
 model = load_model('./'+cfg.config_path.model_dir+'/best_model.keras')
 
 # Chargement du transformer

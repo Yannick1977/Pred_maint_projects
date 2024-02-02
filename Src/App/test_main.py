@@ -1,9 +1,6 @@
 import os
 import sys
-print(os.getcwd())
-#os.chdir('../..')
 sys.path.insert(0, os.getcwd())
-print(os.getcwd())
 import pytest
 from fastapi.testclient import TestClient
 from main import app, Item
