@@ -1,6 +1,12 @@
 import pytest
 from fastapi.testclient import TestClient
 from main import app, Item  # Assurez-vous que votre fichier s'appelle main.py
+import os
+import sys
+os.chdir('../..')
+sys.path.insert(0, os.getcwd())
+
+from Src.config import configuration
 
 client = TestClient(app)
 
