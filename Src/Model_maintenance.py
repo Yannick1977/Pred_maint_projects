@@ -39,7 +39,7 @@ class modelMaintenance :
             """
             self.path_model = path_model
             self.training_history = None
-            self.MODELFILEPATH = self.path_model+'/best_model.keras'
+            self.MODELFILEPATH = self.path_model+'/best_model.h5'
             self.model = self._init_model(num_layers, num_input, num_output, loss, optimizer, metrics)
 
 

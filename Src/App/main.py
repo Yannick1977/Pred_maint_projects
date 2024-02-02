@@ -28,11 +28,7 @@ from Src.config import configuration
 cfg = configuration.config_manager().get_path()
 
 # Chargement du modèle
-print('________________________________')
-print(os.getcwd())
-print('./'+cfg.config_path.model_dir+'/best_model.h5')
-import keras
-print(keras.__version__)
+
 model = load_model('./'+cfg.config_path.model_dir+'/best_model.h5')
 
 # Chargement du transformer
