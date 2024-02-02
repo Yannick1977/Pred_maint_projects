@@ -31,6 +31,4 @@ jobs:
     - name: Test with pytest
       run: |
         ls -l
-        pwd
-        cd Src
-        pytest
+        pytest ./Src/app/test_main.py
