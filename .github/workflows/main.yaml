@@ -33,5 +33,4 @@ jobs:
         ls -l
         pwd
         cd Src
-        cd app
         pytest
