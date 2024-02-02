@@ -9,8 +9,7 @@ class config_manager:
         #if (os.getcwd().split('\\')[-1])=='Notebook':
         #    os.chdir('../')
         print("path : "+os.getcwd())
-        print("path2 : "+os.getcwd().split('\\'))
-        self.cfg = read_yaml(Path("Config\path.yaml"))
+        self.cfg = read_yaml(Path("./Config/path.yaml"))
         create_directories([self.cfg.config_path.work_dir])
         create_directories([self.cfg.config_path.model_dir])
     
