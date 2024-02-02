@@ -31,5 +31,5 @@ jobs:
     - name: Test with pytest
       run: |
         ls -l
-
-        pytest ./Src/App/test_main.py
+        cd Src/App
+        pytest test_main.py
