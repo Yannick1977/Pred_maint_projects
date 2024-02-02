@@ -31,6 +31,8 @@ cfg = configuration.config_manager().get_path()
 print('________________________________')
 print(os.getcwd())
 print('./'+cfg.config_path.model_dir+'/best_model.keras')
+import keras
+print(keras.__version__)
 model = load_model('./'+cfg.config_path.model_dir+'/best_model.keras')
 
 # Chargement du transformer
