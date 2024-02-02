@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, developpement ]
   pull_request:
-    branches: [ main, developpement ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -30,6 +30,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
+        ls -l
+        pwd
         cd Src
         cd app
         pytest
