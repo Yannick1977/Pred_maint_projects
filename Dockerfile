@@ -1,5 +1,5 @@
 # Utilisez une image de base officielle Python 3.8
-FROM python:3.9.18-slim-buster
+FROM python:3.9-slim
 
 # Définir une variable d'environnement pour le répertoire de travail
 WORKDIR /app
@@ -18,3 +18,7 @@ COPY . /app
 
 # Exposer le port sur lequel l'application s'exécutera
 EXPOSE 8000
+
+# Définir la commande par défaut pour exécuter l'application
+CMD ["cd", "Src/App"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

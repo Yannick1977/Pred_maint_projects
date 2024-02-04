@@ -16,3 +16,4 @@ shap
 lime
 fastapi
 httpx
+uvicorn
