@@ -20,5 +20,5 @@ COPY . /app
 EXPOSE 8000
 
 # Définir la commande par défaut pour exécuter l'application
-CMD ["cd", "Src/App"]
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+CMD ["uvicorn", "Src.App.main:app", "--host", "0.0.0.0", "--port", "8000"]

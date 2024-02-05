@@ -15,20 +15,43 @@ class Item(BaseModel):
     Difference_temperature: int
     Power: int
 
-
 app = FastAPI()
 
-# Charger le modèle Keras
 import os
 import sys
-os.chdir('../..')
+
+
+def move_to_project_dir():
+    _st = os.getcwd()
+
+    _k = 5
+    print(f'current dir: {_st}')
+    if os.getenv('NAME_PROJECT') is None:
+        os.environ['NAME_PROJECT'] = "Pred_maint_projects"
+
+    _project_name = os.getenv('NAME_PROJECT')
+    if (_project_name in _st):
+        tmp = _st.split("\\")[-1]
+        while (_st.split("\\")[-1]!=_project_name):
+            print(f'current folder: {os.getcwd()}')
+            os.chdir("..")
+            _st = os.getcwd()
+            _k -= 1
+            if _k < 1:
+                break
+    else:
+        print(f'current dir: {os.getcwd()}')
+        print("not found")
+
+move_to_project_dir()
+
+#os.chdir('../..')
 sys.path.insert(0, os.getcwd())
 
 from Src.config import configuration
 cfg = configuration.config_manager().get_path()
 
 # Chargement du modèle
-
 model = load_model('./'+cfg.config_path.model_dir+'/best_model.h5')
 
 # Chargement du transformer
