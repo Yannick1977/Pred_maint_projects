@@ -29,12 +29,12 @@ def move_to_project_dir():
     #print(f'current dir: {_st}')
     if os.getenv('NAME_PROJECT') is None:
         os.environ['NAME_PROJECT'] = "Pred_maint_projects"
-    _y = os.getcwd().split("\\")[-1]
+    _y = os.getcwd().split(os.sep)[-1]
     print(f' c info :{_y}')
     _project_name = os.getenv('NAME_PROJECT')
     if (_project_name in _st):
-        tmp = _st.split("\\")[-1]
-        while (_st.split("\\")[-1]!=_project_name):
+        tmp = _st.split(os.sep)[-1]
+        while (_st.split(os.sep)[-1]!=_project_name):
             #print(f'current folder: {os.getcwd()}')
             os.chdir("..")
             _st = os.getcwd()
