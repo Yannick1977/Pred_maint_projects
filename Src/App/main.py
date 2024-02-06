@@ -25,10 +25,11 @@ def move_to_project_dir():
     _st = os.getcwd()
 
     _k = 5
-    print(f'current dir: {_st}')
+    #print(f'current dir: {_st}')
     if os.getenv('NAME_PROJECT') is None:
         os.environ['NAME_PROJECT'] = "Pred_maint_projects"
-
+    _y = os.getcwd().split("\\")[-1]
+    print(f' c info :{_y}')
     _project_name = os.getenv('NAME_PROJECT')
     if (_project_name in _st):
         tmp = _st.split("\\")[-1]
@@ -43,7 +44,9 @@ def move_to_project_dir():
         #print(f'current dir: {os.getcwd()}')
         print("not found")
 
+print(f'a folder: {os.getcwd()}')
 move_to_project_dir()
+print(f'b folder: {os.getcwd()}')
 
 #os.chdir('../..')
 sys.path.insert(0, os.getcwd())
