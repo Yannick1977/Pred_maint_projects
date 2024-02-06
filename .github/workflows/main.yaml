@@ -42,4 +42,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: yannickbodin/Pred_maint_projects:v1.0
+        tags: yannickbodin/pred_maint_projects:v1.0
