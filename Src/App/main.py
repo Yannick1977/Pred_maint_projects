@@ -33,14 +33,14 @@ def move_to_project_dir():
     if (_project_name in _st):
         tmp = _st.split("\\")[-1]
         while (_st.split("\\")[-1]!=_project_name):
-            print(f'current folder: {os.getcwd()}')
+            #print(f'current folder: {os.getcwd()}')
             os.chdir("..")
             _st = os.getcwd()
             _k -= 1
             if _k < 1:
                 break
     else:
-        print(f'current dir: {os.getcwd()}')
+        #print(f'current dir: {os.getcwd()}')
         print("not found")
 
 move_to_project_dir()
