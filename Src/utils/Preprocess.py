@@ -53,6 +53,8 @@ class utils_preprocess:
         # Drop rows where 'Failure Type' column is equal to 'No Failure' and 'Target' column is equal to 1
         self.df_ = self.df_[(self.df_['Failure Type'] != 'No Failure') | (self.df_['Target'] != 1)]
 
+        self.save_caracteristics_dataset()
+
         # Memorize the columns where the data type is 'object' (categorical)
         cat_cols = self.df_.select_dtypes(include='O').columns.to_list()
         cat_cols.remove('Failure Type')
@@ -184,6 +186,23 @@ class utils_preprocess:
         y_.columns=list(columns_y)
 
         return pd.concat([X_, y_], axis=1)
+    
+    def save_caracteristics_dataset(self):
+        # Pour chaque colonne, nous allons calculer quelques statistiques
+        stats_ = pd.DataFrame()
+        columns_ = self.df_.columns.drop(['Failure Type', 'Target'])
+        for col in columns_:
+            if (self.df_[col].dtype == 'object'):
+                stats_[col] = [self.df_[col].dtypes, self.df_[col].min(), self.df_[col].max(), self.df_[col].unique()]
+
+            else:
+                stats_[col] = [self.df_[col].dtypes, self.df_[col].min(), self.df_[col].max(), '']
+
+        # Renommer les index du DataFrame stats
+        stats_.index = ['type', 'min', 'max', 'list']
+
+        # Sauvegarder le DataFrame stats dans un fichier CSV
+        stats_.to_csv('./'+self.cfg_path.work_dir+'/dataset_caracteristics', index=True)
 
 
     

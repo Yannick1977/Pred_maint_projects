@@ -1,0 +1,5 @@
+,Type,Air temperature [K],Process temperature [K],Rotational speed [rpm],Torque [Nm],Tool wear [min],Difference temperature [K],Power
+type,object,float64,float64,int64,float64,int64,float64,float64
+min,H,295.3,305.7,1168,3.8,0,7.599999999999966,10966.8
+max,M,304.5,313.8,2886,76.6,253,12.100000000000025,99980.4
+list,['M' 'L' 'H'],,,,,,,

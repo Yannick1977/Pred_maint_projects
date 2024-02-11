@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import numpy as np
 import pandas as pd
 import joblib
+import dill
 
 class Item(BaseModel):
     Type: str
@@ -31,7 +32,6 @@ def move_to_project_dir():
     _project_name = os.getenv('NAME_PROJECT')
     if (_project_name in _st):
         while (_st.split(os.sep)[-1]!=_project_name):
-            #print(f'current folder: {os.getcwd()}')
             os.chdir("..")
             _st = os.getcwd()
             _k -= 1
@@ -43,7 +43,6 @@ def move_to_project_dir():
 
 move_to_project_dir()
 
-#os.chdir('../..')
 sys.path.insert(0, os.getcwd())
 
 from Src.config import configuration
@@ -55,6 +54,11 @@ model = load_model('./'+cfg.config_path.model_dir+'/best_model.h5')
 # Chargement du transformer
 file_transformer = './'+cfg.config_path.work_dir+'/transformer.pkl'
 ct_X_ = joblib.load(file_transformer)
+
+# Chargement de l'explainer
+file_explainer = './'+cfg.config_path.work_dir+'/explainer.pkl'
+with open(file_explainer, 'rb') as f:
+    loaded_explainer = dill.load(f)
 
 @app.get('/')
 def get_index():
@@ -70,6 +74,20 @@ async def predict(item: Item):
     
     # Retourner la prédiction
     return {'prediction': prediction.tolist()}
+
+@app.post('/predict_explain')
+async def explain(item: Item):
+    # Préparer les données pour la prédiction
+    data_transformed = TransformData(item)
+    
+    # Faire une prédiction
+    prediction = model.predict(data_transformed)
+
+    # Expliquer la prédiction
+    exp = loaded_explainer.explain_instance(data_transformed[0], model.predict, num_features=prediction.shape[1])
+    
+    # Retourner la prédiction
+    return {'prediction': prediction.tolist(), 'explanation': exp.as_list()}
 
 @app.post('/test')
 async def test(item: Item):

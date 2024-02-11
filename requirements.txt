@@ -17,3 +17,5 @@ lime
 fastapi
 httpx
 uvicorn
+dill
+joblib
