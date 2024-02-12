@@ -49,20 +49,38 @@ from Src.config import configuration
 cfg = configuration.config_manager().get_path()
 
 # Chargement du modèle
-model = load_model('./'+cfg.config_path.model_dir+'/best_model.h5')
+model = load_model('.'+os.sep+cfg.config_path.model_dir+os.sep+'best_model.h5')
 
 # Chargement du transformer
-file_transformer = './'+cfg.config_path.work_dir+'/transformer.pkl'
+file_transformer = '.'+os.sep+cfg.config_path.work_dir+os.sep+'transformer.pkl'
 ct_X_ = joblib.load(file_transformer)
 
 # Chargement de l'explainer
-file_explainer = './'+cfg.config_path.work_dir+'/explainer.pkl'
+file_explainer = '.'+os.sep+cfg.config_path.work_dir+os.sep+'explainer.pkl'
 with open(file_explainer, 'rb') as f:
     loaded_explainer = dill.load(f)
+
+# Chargement du fichier csv contenant les caracteristiques des données
+file_features = '.'+os.sep+cfg.config_path.work_dir+os.sep+'dataset_caracteristics.csv'
+features = pd.read_csv(file_features, index_col=0).fillna(value=0)
 
 @app.get('/')
 def get_index():
     return 'hello world !'
+
+@app.get("/list_features")
+def list_features():
+    return features.columns.tolist()
+
+@app.get("/features/{variable}")
+def get_features(variable: str):
+    # Vérifier si la colonne existe
+    if variable not in features.columns:
+        return {"error": f"La colonne {variable} n'existe pas"}
+    print(10*'_')
+    print(features[variable].to_dict())
+    # Convertir le dataframe en dictionnaire et le renvoyer
+    return features[variable].to_dict()
 
 @app.post('/predict')
 async def predict(item: Item):

@@ -202,7 +202,7 @@ class utils_preprocess:
         stats_.index = ['type', 'min', 'max', 'list']
 
         # Sauvegarder le DataFrame stats dans un fichier CSV
-        stats_.to_csv('./'+self.cfg_path.work_dir+'/dataset_caracteristics', index=True)
+        stats_.to_csv('./'+self.cfg_path.work_dir+'/dataset_caracteristics.csv', index=True)
 
 
     
