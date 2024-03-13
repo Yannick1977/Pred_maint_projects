@@ -6,6 +6,8 @@ import pandas as pd
 import joblib
 import dill
 
+from Src.utils import convert_explanation
+
 class Item(BaseModel):
     Type: str
     Air_temperature: int
@@ -17,6 +19,7 @@ class Item(BaseModel):
     Power: int
 
 app = FastAPI()
+conv_expl = convert_explanation.explanation_convertion()
 
 import os
 import sys
@@ -95,6 +98,9 @@ async def predict(item: Item):
 
 @app.post('/predict_explain')
 async def explain(item: Item):
+    """
+    
+    """
     # Préparer les données pour la prédiction
     data_transformed = TransformData(item)
     
@@ -105,7 +111,10 @@ async def explain(item: Item):
     exp = loaded_explainer.explain_instance(data_transformed[0], model.predict, num_features=prediction.shape[1])
     
     # Retourner la prédiction
-    return {'prediction': prediction.tolist(), 'explanation': exp.as_list()}
+    #print(conv_expl.convert_data_explanation(exp.as_list(), ct_X_))
+    return {'prediction': prediction.tolist(), 'explanation': conv_expl.convert_data_explanation(exp.as_list(), ct_X_)}
+
+    #return {'prediction': prediction.tolist(), 'explanation': convert_explanation(exp.as_list(), ct_X_)}
 
 @app.post('/test')
 async def test(item: Item):

@@ -129,7 +129,6 @@ class utils_preprocess:
             dict_target_inv_[i] = c
 
         # Save the validation dataset
-        #pd.concat([X_val_trans, y_val_trans], axis=1).to_csv('../data/predictive_maintenance_validation.csv')
         self.create_df_from_X_y(X_=X_val_trans, y_=y_val_trans, columns_y=dict_target_inv_.values()).to_csv(self.cfg_path.local_data_file_validation, index=False)
 
         # Apply SMOTE to the dataset train and test
