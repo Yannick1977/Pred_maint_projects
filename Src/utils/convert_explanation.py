@@ -88,18 +88,26 @@ class explanation_convertion:
             lst_expl_details = self.split_string(expl[0], delimiteurs)
             if len(lst_expl_details) == 2:
                 tmp = self.split_string(lst_expl_details[0], ['__'])
+                #print("tmp: "+str(tmp))
                 if (tmp[0].strip() == 'cat'):
                     a = self.trouver_flottants(lst_expl_details[1])[0]
                 else:
                     a = round(self.inverse_transform(ct, tmp[0].strip(), tmp[1].strip(), lst_expl_details[1]), 2)
-                st1 = (expl[0]).replace(lst_expl_details[1], str(a))    
+                st1 = (expl[0]).replace(lst_expl_details[1], str(a))    # remplacement de la valeur par la valeur réelle
+                st1  = st1.replace('cat__', '').replace('num__', '')    # suppression des préfixes   
                 z = (st1, expl[1]*100)
 
             if len(lst_expl_details) == 3:
                 tmp = self.split_string(lst_expl_details[1], ['__'])
-                a = round(self.inverse_transform(ct, tmp[0].strip(), tmp[1].strip(), lst_expl_details[0]), 2)
-                b = round(self.inverse_transform(ct, tmp[0].strip(), tmp[1].strip(), lst_expl_details[2]), 2)
-                st1 = (expl[0]).replace(lst_expl_details[0], str(a)).replace(lst_expl_details[2], str(b))
+                #print(tmp)
+                if (tmp[0].strip() == 'cat'):
+                    a = self.trouver_flottants(lst_expl_details[0])[0]
+                    b = self.trouver_flottants(lst_expl_details[2])[0]
+                else:
+                    a = round(self.inverse_transform(ct, tmp[0].strip(), tmp[1].strip(), lst_expl_details[0]), 2)
+                    b = round(self.inverse_transform(ct, tmp[0].strip(), tmp[1].strip(), lst_expl_details[2]), 2)
+                st1 = (expl[0]).replace(lst_expl_details[0], str(a)).replace(lst_expl_details[2], str(b))   #remplacement de la valeur par la valeur réelle
+                st1 = st1.replace('cat__', '').replace('num__', '') # suppression des préfixes
                 z = (st1, expl[1]*100)
             ret.append(z)
         return ret

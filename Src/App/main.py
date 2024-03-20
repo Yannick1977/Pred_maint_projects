@@ -1,22 +1,34 @@
 from fastapi import FastAPI
 from tensorflow.keras.models import load_model
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import numpy as np
 import pandas as pd
 import joblib
 import dill
-
+from enum import Enum
+from typing import List
 from Src.utils import convert_explanation
 
-class Item(BaseModel):
-    Type: str
-    Air_temperature: int
-    Process_temperature: int
-    Rotational_speed: int
-    Torque: int
-    Tool_wear: int
-    Difference_temperature: int
-    Power: int
+class ItemType(str, Enum):
+    M = "M"
+    L = "L"
+    H = "H"
+
+class ItemInput(BaseModel):
+    Type: ItemType = Field(..., title="The type of the item", description="The type of the item (M, L, H)", max_length=1)
+    Air_temperature: float = Field(..., title="The air temperature in Kelvin", ge=295.3, le=304.5)
+    Process_temperature: float = Field(..., title="The process temperature in Kelvin", ge=305.7, le=313.8)
+    Rotational_speed: float = Field(..., title="The rotational speed in RPM", ge=1168, le=2886)
+    Torque: float = Field(..., title="The torque in N.m", ge=3.8, le=76.6)
+    Tool_wear: float = Field(..., title="The tool wear in minutes", ge=0, le=253)
+
+class ItemOutputPredict(BaseModel):
+    name: str
+    proba: float
+
+class ItemOutputExplain(BaseModel):
+    item: str
+    weight: float
 
 app = FastAPI()
 conv_expl = convert_explanation.explanation_convertion()
@@ -73,33 +85,66 @@ def get_index():
 
 @app.get("/list_features")
 def list_features():
+    """
+    Returns a list of column names in the 'features' dataframe.
+    """
     return features.columns.tolist()
 
 @app.get("/features/{variable}")
 def get_features(variable: str):
+    """
+    Retrieve the values of a specific variable from the features dataframe.
+
+    Parameters:
+    variable (str): The name of the variable/column to retrieve.
+
+    Returns:
+    dict: A dictionary containing the values of the specified variable.
+          If the variable does not exist in the dataframe, an error message is returned.
+    """
     # Vérifier si la colonne existe
     if variable not in features.columns:
         return {"error": f"La colonne {variable} n'existe pas"}
-    print(10*'_')
-    print(features[variable].to_dict())
-    # Convertir le dataframe en dictionnaire et le renvoyer
+
+    # Convertir le dataframe en dictionnaire et le retourner
     return features[variable].to_dict()
 
-@app.post('/predict')
-async def predict(item: Item):
+@app.post('/predict', response_model=List[ItemOutputPredict])
+async def predict(item: ItemInput):
+    """
+    Endpoint for making predictions.
+
+    Args:
+        item (Item): The input item for prediction.
+
+    Returns:
+        dict: A dictionary containing the prediction result.
+    """
     # Préparer les données pour la prédiction
     data_transformed = TransformData(item)
     
     # Faire une prédiction
     prediction = model.predict(data_transformed)
-    
-    # Retourner la prédiction
-    return {'prediction': prediction.tolist()}
 
-@app.post('/predict_explain')
-async def explain(item: Item):
+    # Retourner la prédiction
+    dict_predict = [{"name":"Heat dissipation failure", "proba":prediction.tolist()[0][0]}, 
+            {"name":"No failure", "proba":prediction.tolist()[0][1]},
+            {"name":"Overtrain failure", "proba":prediction.tolist()[0][2]},
+            {"name":"Power failure", "proba":prediction.tolist()[0][3]},
+            {"name":"Tool wear failure", "proba":prediction.tolist()[0][4]}]
+    return dict_predict
+    #return {'prediction': prediction.tolist()}
+
+@app.post('/explain', response_model=List[ItemOutputExplain])
+async def explain(item: ItemInput):
     """
+    Endpoint for predicting and explaining an item.
     
+    Args:
+        item (Item): The item to be explained.
+    
+    Returns:
+        dict: A dictionary containing the explanation.
     """
     # Préparer les données pour la prédiction
     data_transformed = TransformData(item)
@@ -112,18 +157,13 @@ async def explain(item: Item):
     
     # Retourner la prédiction
     #print(conv_expl.convert_data_explanation(exp.as_list(), ct_X_))
-    return {'prediction': prediction.tolist(), 'explanation': conv_expl.convert_data_explanation(exp.as_list(), ct_X_)}
-
-    #return {'prediction': prediction.tolist(), 'explanation': convert_explanation(exp.as_list(), ct_X_)}
-
-@app.post('/test')
-async def test(item: Item):
-    # Préparer les données pour la prédiction
-    data_transformed = TransformData(item)
-    return {'test': data_transformed.tolist()}
+    dict_explain = [{"item":x[0], "weight":x[1]} for x in conv_expl.convert_data_explanation(exp.as_list(), ct_X_)]
+    return dict_explain
+    #return {'prediction': prediction.tolist(), 'explanation': conv_expl.convert_data_explanation(exp.as_list(), ct_X_)}
 
 
-def TransformData(item: Item):
+
+def TransformData(item: ItemInput):
     """
     Transforms the given item data into a format suitable for prediction.
 
@@ -133,14 +173,23 @@ def TransformData(item: Item):
     Returns:
         tab1 (Numpy): The transformed data in a Numpy format.
     """
-    data = np.array([item.Type,
+
+    if item.Type == 'M':
+        tmp = 'M'
+    elif item.Type == 'L':
+        tmp = 'L'
+    elif item.Type == 'H':
+        tmp = 'H'
+    else:
+        tmp = 'M'
+    data = np.array([tmp,
                     item.Air_temperature,
                     item.Process_temperature, 
                     item.Rotational_speed, 
                     item.Torque, 
                     item.Tool_wear, 
-                    item.Difference_temperature,
-                    item.Power])
+                    item.Process_temperature-item.Air_temperature,
+                    item.Torque*item.Rotational_speed])
     data = pd.DataFrame(data.reshape(1, -1), columns=ct_X_.feature_names_in_)
     tab1 = ct_X_.transform(data)
     return tab1
