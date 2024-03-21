@@ -25,9 +25,12 @@ https://www.kaggle.com/datasets/shivamb/machine-predictive-maintenance-classific
 
 
 An image is generated with githubactions.
+
 This image is available with command :
     docker pull yannickbodin/pred_maint_projects
+
 The library used to implement the API is FastAPI.
+
 The different entry points available are :
 - '/' : just a hello
 - '/list_features/' : returns a list of input variables 
@@ -39,5 +42,3 @@ An online version is available on Render :
 https://test-pred-maint-projects.onrender.com/docs
 
 Warning: one minute latency for first startup
-
-Translated with www.DeepL.com/Translator (free version)
