@@ -116,9 +116,17 @@ async def predict(item: ItemInput):
 
     Args:
         item (Item): The input item for prediction.
+        example : {
+                    "Type": "M",
+                    "Air_temperature": 295.3,
+                    "Process_temperature": 305.7,
+                    "Rotational_speed": 1168,
+                    "Torque": 3.8,
+                    "Tool_wear": 253
+                    }
 
     Returns:
-        dict: A dictionary containing the prediction result.
+        dict: A dictionary containing the prediction resultwith the probabilite for each classes.
     """
     # Préparer les données pour la prédiction
     data_transformed = TransformData(item)
@@ -138,10 +146,18 @@ async def predict(item: ItemInput):
 @app.post('/explain', response_model=List[ItemOutputExplain])
 async def explain(item: ItemInput):
     """
-    Endpoint for predicting and explaining an item.
+    Endpoint for explaining an item.
     
     Args:
         item (Item): The item to be explained.
+        example : {
+                "Type": "M",
+                "Air_temperature": 295.3,
+                "Process_temperature": 305.7,
+                "Rotational_speed": 1168,
+                "Torque": 3.8,
+                "Tool_wear": 253
+                }
     
     Returns:
         dict: A dictionary containing the explanation.
