@@ -20,5 +20,4 @@ uvicorn
 dill
 joblib
 pydantic
-enum
 typing
