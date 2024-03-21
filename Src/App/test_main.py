@@ -5,7 +5,7 @@ from typing import List
 sys.path.insert(0, os.getcwd())
 import pytest
 from fastapi.testclient import TestClient
-from main import app, ItemInput, ItemOutputPredict
+from main import app, ItemInput
 
 
 client = TestClient(app)
